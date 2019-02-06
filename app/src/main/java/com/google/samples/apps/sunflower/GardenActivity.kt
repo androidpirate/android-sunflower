@@ -38,10 +38,13 @@ class GardenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // DataBinding used to get references to widgets
         val binding: ActivityGardenBinding = DataBindingUtil.setContentView(this,
                 R.layout.activity_garden)
         drawerLayout = binding.drawerLayout
 
+        // Navigation Component setup
+        // No more FragmentManager and fragment transactions in Activity! Yay!
         navController = Navigation.findNavController(this, R.id.garden_nav_fragment)
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
 
