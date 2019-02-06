@@ -47,22 +47,42 @@ class PlantDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // By using Navigation Component no need to create a static newInstance()
+        // method to pass fragment arguments! Yay!
         val plantId = PlantDetailFragmentArgs.fromBundle(arguments!!).plantId
 
         val factory = InjectorUtils.providePlantDetailViewModelFactory(requireActivity(), plantId)
+        /**
+         * TODO 4: For this ViewModel a Fragment context is passed?
+         * - Emre
+         */
         val plantDetailViewModel = ViewModelProviders.of(this, factory)
                 .get(PlantDetailViewModel::class.java)
 
         val binding = DataBindingUtil.inflate<FragmentPlantDetailBinding>(
                 inflater, R.layout.fragment_plant_detail, container, false).apply {
+            /**
+             * TODO 5: Why use a ViewModel as a DataBinding variable?
+             * Gets an instance of Plant from PlantRepo using an id in init block.
+             * Plant is emitted as LiveData from PlantDao, but ViewModel is not
+             * observing any changes. How is it possible for DataBinding to observe
+             * LiveData by simply calling viewModel.plant.name?
+             * - Emre
+             */
             viewModel = plantDetailViewModel
             setLifecycleOwner(this@PlantDetailFragment)
             fab.setOnClickListener { view ->
+                // Adds plant to garden instance
                 plantDetailViewModel.addPlantToGarden()
                 Snackbar.make(view, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()
             }
         }
 
+        /**
+         * TODO 6: Below observe changes to Plant to get plant.name?
+         * Isn't it a overkill to represent Plant as a LiveData since
+         * Plant details won't update often?
+         */
         plantDetailViewModel.plant.observe(this, Observer { plant ->
             shareText = if (plant == null) {
                 ""

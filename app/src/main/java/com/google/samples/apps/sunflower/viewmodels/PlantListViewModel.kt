@@ -32,7 +32,15 @@ class PlantListViewModel internal constructor(
 ) : ViewModel() {
 
     private val growZoneNumber = MutableLiveData<Int>()
-
+    /**
+     * TODO 7: PlantRepo is used to get plants data in init block,
+     * however the result is used to set MediatorLiveData value,
+     * which in return is returned as the data from the ViewModel.
+     * Since LiveData objects emits chances to database tables
+     * (local or remote), why need a MediatorLiveData to react
+     * to onChange events from LiveData?
+     * - Emre
+     */
     private val plantList = MediatorLiveData<List<Plant>>()
 
     init {
